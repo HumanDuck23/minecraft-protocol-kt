@@ -1,7 +1,14 @@
 package dev.spaghett.packet
 
+import dev.spaghett.protocol.handshaking.client.C00Handshake
+
 object PacketRegistry {
+
     private val registry = mutableMapOf<PacketMeta, () -> Packet>()
+
+    init {
+        registerPackets()
+    }
 
     fun register(meta: PacketMeta, constructor: () -> Packet) {
         registry[meta] = constructor
@@ -18,4 +25,5 @@ inline fun <reified T : Packet> registerPacket(noinline constructor: () -> T) {
 }
 
 fun registerPackets() {
+    registerPacket { C00Handshake() }
 }
