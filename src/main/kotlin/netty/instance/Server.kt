@@ -40,7 +40,7 @@ class Server (
                         p.addLast("lengthEncoder", LengthEncoder())
                         p.addLast("packetEncoder", PacketEncoder())
 
-                        p.addLast("handler", DefaultServerHandler(config))
+                        p.addLast("handler", serverHandler)
                     }
                 })
             }.bind(config.port).sync().also {
