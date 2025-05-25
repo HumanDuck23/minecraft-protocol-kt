@@ -49,18 +49,16 @@ class DefaultServerHandler(private val config: ServerConfiguration) : ServerPack
 
             is C01StatusPing -> {
                 val pingTime = packet.payload
-                println("Received ping: $pingTime ms")
 
                 val pongResponse = dev.spaghett.protocol.status.server.S01StatusPong()
                 pongResponse.payload = pingTime
                 ctx.writeAndFlush(pongResponse)
 
-                println("Sent pong!")
                 ctx.close() // Close the connection after sending the pong response
             }
 
             else -> {
-                println("Unknown status packet: ${packet.meta}")
+                logger.warn("Unknown status packet received: {}", packet.meta)
             }
         }
     }

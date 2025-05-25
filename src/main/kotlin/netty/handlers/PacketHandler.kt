@@ -1,12 +1,16 @@
 package dev.spaghett.netty.handlers
 
 import dev.spaghett.netty.STATE_KEY
+import dev.spaghett.netty.codec.PacketDecoder
 import dev.spaghett.packet.Packet
 import dev.spaghett.packet.ProtocolState
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
+import org.slf4j.LoggerFactory
 
 abstract class PacketHandler : SimpleChannelInboundHandler<Packet>() {
+    protected val logger = LoggerFactory.getLogger(PacketDecoder::class.java)
+
     override fun channelRead0(ctx: ChannelHandlerContext, packet: Packet) {
         val state = ctx.channel().attr(STATE_KEY).get()!!
         when (state) {
