@@ -18,7 +18,7 @@ import java.net.InetSocketAddress
 import java.net.SocketAddress
 
 class Server (
-    private val port: SocketAddress = InetSocketAddress(25565)
+    private val config: ServerConfiguration
 ) {
     private val bossGroup = MultiThreadIoEventLoopGroup(NioIoHandler.newFactory())
     private val workerGroup = MultiThreadIoEventLoopGroup(NioIoHandler.newFactory())
@@ -40,11 +40,11 @@ class Server (
                         p.addLast("lengthEncoder", LengthEncoder())
                         p.addLast("packetEncoder", PacketEncoder())
 
-                        p.addLast("handler", ServerHandler())
+                        p.addLast("handler", ServerHandler(config))
                     }
                 })
-            }.bind(port).sync().also {
-                println("Server started on port $port")
+            }.bind(config.port).sync().also {
+                println("Server started on port ${config.port}")
                 it.channel().closeFuture().sync()
             }
         } finally {

@@ -2,6 +2,7 @@ package dev.spaghett.netty.handlers
 
 import com.google.gson.JsonObject
 import dev.spaghett.netty.STATE_KEY
+import dev.spaghett.netty.instance.ServerConfiguration
 import dev.spaghett.packet.Packet
 import dev.spaghett.packet.ProtocolState
 import dev.spaghett.protocol.handshake.client.C00Handshake
@@ -15,7 +16,7 @@ import dev.spaghett.protocol.status.server.S00StatusResponse
 import io.netty.channel.ChannelHandlerContext
 import java.util.UUID
 
-class ServerHandler : PacketHandler() {
+class ServerHandler(private val config: ServerConfiguration) : PacketHandler() {
     override fun handshake(ctx: ChannelHandlerContext, packet: Packet) {
         val handshake = packet as C00Handshake
 
@@ -29,21 +30,17 @@ class ServerHandler : PacketHandler() {
                 val json = JsonObject()
 
                 val version = JsonObject().apply {
-                    addProperty("name", "Server")
+                    addProperty("name", "1.8.9")
                     addProperty("protocol",  47)
                 }
 
                 val players = JsonObject().apply {
-                    addProperty("max", 20)
+                    addProperty("max", config.maxPlayers)
                     addProperty("online", 0)
-                    add("sample", JsonObject().apply {
-                        addProperty("name", "TestPlayer")
-                        addProperty("id", "123e4567-e89b-12d3-a456-426614174000")
-                    })
                 }
 
                 val description = JsonObject().apply {
-                    addProperty("text", "Spaghetto's Minecraft Server")
+                    addProperty("text", config.motd)
                 }
 
                 json.apply {
