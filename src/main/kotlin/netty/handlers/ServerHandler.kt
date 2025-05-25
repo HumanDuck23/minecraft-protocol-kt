@@ -19,49 +19,54 @@ class ServerHandler : PacketHandler() {
     }
 
     override fun status(ctx: ChannelHandlerContext, packet: Packet) {
-        println("Status!!")
-        if (packet is C00StatusRequest) {
-            val json = JsonObject()
+        when (packet) {
+            is C00StatusRequest -> {
+                val json = JsonObject()
 
-            val version = JsonObject().apply {
-                addProperty("name", "Server")
-                addProperty("protocol",  47)
+                val version = JsonObject().apply {
+                    addProperty("name", "Server")
+                    addProperty("protocol",  47)
+                }
+
+                val players = JsonObject().apply {
+                    addProperty("max", 20)
+                    addProperty("online", 0)
+                    add("sample", JsonObject().apply {
+                        addProperty("name", "TestPlayer")
+                        addProperty("id", "123e4567-e89b-12d3-a456-426614174000")
+                    })
+                }
+
+                val description = JsonObject().apply {
+                    addProperty("text", "Spaghetto's Minecraft Server")
+                }
+
+                json.apply {
+                    add("version", version)
+                    add("players", players)
+                    add("description", description)
+                }
+
+                val response = S00StatusResponse()
+                response.json = json.toString()
+                ctx.writeAndFlush(response)
             }
 
-            val players = JsonObject().apply {
-                addProperty("max", 20)
-                addProperty("online", 0)
-                add("sample", JsonObject().apply {
-                    addProperty("name", "TestPlayer")
-                    addProperty("id", "123e4567-e89b-12d3-a456-426614174000")
-                })
+            is C01StatusPing -> {
+                val pingTime = packet.payload
+                println("Received ping: $pingTime ms")
+
+                val pongResponse = dev.spaghett.protocol.status.server.S01StatusPong()
+                pongResponse.payload = pingTime
+                ctx.writeAndFlush(pongResponse)
+
+                println("Sent pong!")
+                ctx.close() // Close the connection after sending the pong response
             }
 
-            val description = JsonObject().apply {
-                addProperty("text", "Spaghetto's Minecraft Server")
+            else -> {
+                println("Unknown status packet: ${packet.meta}")
             }
-
-            json.apply {
-                add("version", version)
-                add("players", players)
-                add("description", description)
-            }
-
-            val response = S00StatusResponse()
-            response.json = json.toString()
-            ctx.writeAndFlush(response)
-        } else if (packet is C01StatusPing) {
-            val pingTime = packet.payload
-            println("Received ping: $pingTime ms")
-
-            val pongResponse = dev.spaghett.protocol.status.server.S01StatusPong()
-            pongResponse.payload = pingTime
-            ctx.writeAndFlush(pongResponse)
-
-            println("Sent pong!")
-            ctx.close() // Close the connection after sending the pong response
-        } else {
-            println("Unknown status packet: ${packet.meta}")
         }
     }
 
