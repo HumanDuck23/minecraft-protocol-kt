@@ -1,5 +1,8 @@
 package dev.spaghett
 
+import dev.spaghett.netty.instance.Server
+
 fun main() {
-    println("Hello World!")
+    val server = Server()
+    server.start()
 }

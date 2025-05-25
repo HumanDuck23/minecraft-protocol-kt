@@ -1,4 +1,4 @@
-package dev.spaghett.protocol.handshaking.client
+package dev.spaghett.protocol.handshake.client
 
 import dev.spaghett.packet.Packet
 import dev.spaghett.packet.PacketDirection
