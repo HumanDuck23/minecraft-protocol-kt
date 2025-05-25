@@ -4,6 +4,10 @@ import dev.spaghett.protocol.handshake.client.C00Handshake
 import dev.spaghett.protocol.login.client.C00LoginStart
 import dev.spaghett.protocol.login.server.S00Disconnect
 import dev.spaghett.protocol.login.server.S02LoginSuccess
+import dev.spaghett.protocol.play.client.C06PlayerPositionAndLook
+import dev.spaghett.protocol.play.client.C16ClientStatus
+import dev.spaghett.protocol.play.client.C17PluginMessage
+import dev.spaghett.protocol.play.server.*
 import dev.spaghett.protocol.status.client.C00StatusRequest
 import dev.spaghett.protocol.status.client.C01StatusPing
 import dev.spaghett.protocol.status.server.S00StatusResponse
@@ -44,6 +48,10 @@ fun registerPackets() {
     // Login
     registerPacket { C00LoginStart() }
 
+    // Play
+    registerPacket { C06PlayerPositionAndLook() }
+    registerPacket { C16ClientStatus() }
+    registerPacket { C17PluginMessage() }
 
     ///// Server Packets /////
 
@@ -54,4 +62,12 @@ fun registerPackets() {
     // Login
     registerPacket { S00Disconnect() }
     registerPacket { S02LoginSuccess() }
+
+    // Play
+    registerPacket { S01JoinGame() }
+    registerPacket { S3FPluginMessage() }
+    registerPacket { S05SpawnPosition() }
+    registerPacket { S08PlayerPositionAndLook() }
+    registerPacket { S39PlayerAbilities() }
+    registerPacket { S41ServerDifficulty() }
 }

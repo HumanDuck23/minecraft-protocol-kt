@@ -7,6 +7,8 @@ import dev.spaghett.packet.ProtocolState
 import dev.spaghett.protocol.handshake.client.C00Handshake
 import dev.spaghett.protocol.login.client.C00LoginStart
 import dev.spaghett.protocol.login.server.S02LoginSuccess
+import dev.spaghett.protocol.play.client.C17PluginMessage
+import dev.spaghett.protocol.play.server.*
 import dev.spaghett.protocol.status.client.C00StatusRequest
 import dev.spaghett.protocol.status.client.C01StatusPing
 import dev.spaghett.protocol.status.server.S00StatusResponse
@@ -77,16 +79,62 @@ class ServerHandler : PacketHandler() {
         when (packet) {
             is C00LoginStart -> {
                 val success = S02LoginSuccess()
-                success.uuid = UUID.fromString(packet.username).toString()
+                success.uuid = UUID.nameUUIDFromBytes(packet.username.toByteArray()).toString()
                 success.username = packet.username
                 ctx.writeAndFlush(success)
 
                 ctx.channel().attr(STATE_KEY).set(ProtocolState.PLAY)
+
+                val joinGame = S01JoinGame().apply {
+                    entityId = 1
+                    gamemode = 0
+                    dimension = 0
+                    difficulty = 1
+                    maxPlayers = 20
+                    levelType = "default"
+                    reducedDebugInfo = false
+                }
+                ctx.writeAndFlush(joinGame)
+
+                val brand = S3FPluginMessage().apply {
+                    channel = "MC|Brand"
+                    data = "Spaghetto".toByteArray()
+                }
+                ctx.writeAndFlush(brand)
+
+                val serverDifficulty = S41ServerDifficulty().apply {
+                    difficulty = 1
+                }
+                ctx.writeAndFlush(serverDifficulty)
+
+                val spawnPosition = S05SpawnPosition().apply {
+                    location = Triple(0, 64, 0)
+                }
+                ctx.writeAndFlush(spawnPosition)
+
+                val playerAbilities = S39PlayerAbilities().apply {
+                    flags = 0x01
+                    flyingSpeed = 1f
+                    fovModifier = 1f
+                }
+                ctx.writeAndFlush(playerAbilities)
             }
         }
     }
 
     override fun play(ctx: ChannelHandlerContext, packet: Packet) {
-        TODO("Not yet implemented")
+        when (packet) {
+            is C17PluginMessage -> {
+                val playerPositionAndLook = S08PlayerPositionAndLook().apply {
+                    x = 0.0
+                    y = 64.0
+                    z = 0.0
+                    yaw = 0f
+                    pitch = 0f
+                    flags = 0
+                }
+                ctx.writeAndFlush(playerPositionAndLook)
+            }
+        }
     }
 }
