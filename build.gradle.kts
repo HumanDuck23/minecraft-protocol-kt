@@ -14,6 +14,8 @@ dependencies {
 
     // https://mvnrepository.com/artifact/io.netty/netty-all
     implementation("io.netty:netty-all:4.2.0.Final")
+
+    implementation("com.google.code.gson:gson:2.10.1")
 }
 
 tasks.test {
