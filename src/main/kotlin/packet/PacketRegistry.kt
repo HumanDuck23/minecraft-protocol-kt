@@ -1,6 +1,7 @@
 package dev.spaghett.packet
 
 import dev.spaghett.protocol.handshake.client.C00Handshake
+import dev.spaghett.protocol.login.client.C00LoginStart
 import dev.spaghett.protocol.status.client.C00StatusRequest
 import dev.spaghett.protocol.status.client.C01StatusPing
 import dev.spaghett.protocol.status.server.S00StatusResponse
@@ -29,12 +30,17 @@ inline fun <reified T : Packet> registerPacket(noinline constructor: () -> T) {
 }
 
 fun registerPackets() {
-    // Client Packets
+    ///// Client Packets /////
+
+    // Handshake
     registerPacket { C00Handshake() }
     registerPacket { C00StatusRequest() }
+
+    // Status
     registerPacket { C01StatusPing() }
 
-    // Server Packets
+
+    ///// Server Packets /////
     registerPacket { S00StatusResponse() }
     registerPacket { S01StatusPong() }
 }
