@@ -2,6 +2,8 @@ package dev.spaghett.packet
 
 import dev.spaghett.protocol.handshake.client.C00Handshake
 import dev.spaghett.protocol.login.client.C00LoginStart
+import dev.spaghett.protocol.login.server.S00Disconnect
+import dev.spaghett.protocol.login.server.S02LoginSuccess
 import dev.spaghett.protocol.status.client.C00StatusRequest
 import dev.spaghett.protocol.status.client.C01StatusPing
 import dev.spaghett.protocol.status.server.S00StatusResponse
@@ -39,8 +41,17 @@ fun registerPackets() {
     // Status
     registerPacket { C01StatusPing() }
 
+    // Login
+    registerPacket { C00LoginStart() }
+
 
     ///// Server Packets /////
+
+    // Status
     registerPacket { S00StatusResponse() }
     registerPacket { S01StatusPong() }
+
+    // Login
+    registerPacket { S00Disconnect() }
+    registerPacket { S02LoginSuccess() }
 }

@@ -5,10 +5,13 @@ import dev.spaghett.netty.STATE_KEY
 import dev.spaghett.packet.Packet
 import dev.spaghett.packet.ProtocolState
 import dev.spaghett.protocol.handshake.client.C00Handshake
+import dev.spaghett.protocol.login.client.C00LoginStart
+import dev.spaghett.protocol.login.server.S02LoginSuccess
 import dev.spaghett.protocol.status.client.C00StatusRequest
 import dev.spaghett.protocol.status.client.C01StatusPing
 import dev.spaghett.protocol.status.server.S00StatusResponse
 import io.netty.channel.ChannelHandlerContext
+import java.util.UUID
 
 class ServerHandler : PacketHandler() {
     override fun handshake(ctx: ChannelHandlerContext, packet: Packet) {
@@ -71,7 +74,16 @@ class ServerHandler : PacketHandler() {
     }
 
     override fun login(ctx: ChannelHandlerContext, packet: Packet) {
-        TODO("Not yet implemented")
+        when (packet) {
+            is C00LoginStart -> {
+                val success = S02LoginSuccess()
+                success.uuid = UUID.fromString(packet.username).toString()
+                success.username = packet.username
+                ctx.writeAndFlush(success)
+
+                ctx.channel().attr(STATE_KEY).set(ProtocolState.PLAY)
+            }
+        }
     }
 
     override fun play(ctx: ChannelHandlerContext, packet: Packet) {
