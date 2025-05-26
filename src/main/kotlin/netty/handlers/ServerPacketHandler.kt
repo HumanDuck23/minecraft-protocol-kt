@@ -4,7 +4,7 @@ import dev.spaghett.netty.STATE_KEY
 import dev.spaghett.netty.instance.ServerConfiguration
 import dev.spaghett.packet.Packet
 import dev.spaghett.packet.ProtocolState
-import dev.spaghett.protocol.handshake.client.C00Handshake
+import dev.spaghett.protocol.v1_8.handshake.client.C00Handshake
 import io.netty.channel.ChannelHandlerContext
 
 abstract class ServerPacketHandler(private val config: ServerConfiguration) : PacketHandler() {

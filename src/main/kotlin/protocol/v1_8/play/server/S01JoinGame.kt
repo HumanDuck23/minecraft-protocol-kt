@@ -1,12 +1,9 @@
-package dev.spaghett.protocol.play.server
+package dev.spaghett.protocol.v1_8.play.server
 
-import dev.spaghett.packet.Packet
-import dev.spaghett.packet.PacketDirection
-import dev.spaghett.packet.PacketMeta
-import dev.spaghett.packet.ProtocolState
+import dev.spaghett.packet.*
 import dev.spaghett.packet.values.*
 
-class S01JoinGame : Packet(PacketMeta(0x01, PacketDirection.FROM_SERVER, ProtocolState.PLAY)) {
+class S01JoinGame : Packet(PacketMeta(0x01, PacketDirection.FROM_SERVER, ProtocolState.PLAY, ProtocolVersion.V1_8)) {
     var entityId by IntValue(this)
     var gamemode by UByteValue(this)
     var dimension by ByteValue(this)

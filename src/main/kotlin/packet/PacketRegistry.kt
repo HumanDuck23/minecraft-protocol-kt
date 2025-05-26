@@ -1,24 +1,11 @@
 package dev.spaghett.packet
 
-import dev.spaghett.protocol.handshake.client.C00Handshake
-import dev.spaghett.protocol.login.client.C00LoginStart
-import dev.spaghett.protocol.login.server.S00Disconnect
-import dev.spaghett.protocol.login.server.S02LoginSuccess
-import dev.spaghett.protocol.play.client.C06PlayerPositionAndLook
-import dev.spaghett.protocol.play.client.C16ClientStatus
-import dev.spaghett.protocol.play.client.C17PluginMessage
-import dev.spaghett.protocol.play.server.*
-import dev.spaghett.protocol.status.client.C00StatusRequest
-import dev.spaghett.protocol.status.client.C01StatusPing
-import dev.spaghett.protocol.status.server.S00StatusResponse
-import dev.spaghett.protocol.status.server.S01StatusPong
-
 object PacketRegistry {
 
     private val registry = mutableMapOf<PacketMeta, () -> Packet>()
 
     init {
-        registerPackets()
+        registerPackets1_8()
     }
 
     fun register(meta: PacketMeta, constructor: () -> Packet) {
@@ -35,39 +22,39 @@ inline fun <reified T : Packet> registerPacket(noinline constructor: () -> T) {
     PacketRegistry.register(meta, constructor)
 }
 
-fun registerPackets() {
+fun registerPackets1_8() {
     ///// Client Packets /////
 
     // Handshake
-    registerPacket { C00Handshake() }
-    registerPacket { C00StatusRequest() }
+    registerPacket { dev.spaghett.protocol.v1_8.handshake.client.C00Handshake() }
 
     // Status
-    registerPacket { C01StatusPing() }
+    registerPacket { dev.spaghett.protocol.v1_8.status.client.C00StatusRequest() }
+    registerPacket { dev.spaghett.protocol.v1_8.status.client.C01StatusPing() }
 
     // Login
-    registerPacket { C00LoginStart() }
+    registerPacket { dev.spaghett.protocol.v1_8.login.client.C00LoginStart() }
 
     // Play
-    registerPacket { C06PlayerPositionAndLook() }
-    registerPacket { C16ClientStatus() }
-    registerPacket { C17PluginMessage() }
+    registerPacket { dev.spaghett.protocol.v1_8.play.client.C06PlayerPositionAndLook() }
+    registerPacket { dev.spaghett.protocol.v1_8.play.client.C16ClientStatus() }
+    registerPacket { dev.spaghett.protocol.v1_8.play.client.C17PluginMessage() }
 
     ///// Server Packets /////
 
     // Status
-    registerPacket { S00StatusResponse() }
-    registerPacket { S01StatusPong() }
+    registerPacket { dev.spaghett.protocol.v1_8.status.server.S00StatusResponse() }
+    registerPacket { dev.spaghett.protocol.v1_8.status.server.S01StatusPong() }
 
     // Login
-    registerPacket { S00Disconnect() }
-    registerPacket { S02LoginSuccess() }
+    registerPacket { dev.spaghett.protocol.v1_8.login.server.S00Disconnect() }
+    registerPacket { dev.spaghett.protocol.v1_8.login.server.S02LoginSuccess() }
 
     // Play
-    registerPacket { S01JoinGame() }
-    registerPacket { S3FPluginMessage() }
-    registerPacket { S05SpawnPosition() }
-    registerPacket { S08PlayerPositionAndLook() }
-    registerPacket { S39PlayerAbilities() }
-    registerPacket { S41ServerDifficulty() }
+    registerPacket { dev.spaghett.protocol.v1_8.play.server.S01JoinGame() }
+    registerPacket { dev.spaghett.protocol.v1_8.play.server.S3FPluginMessage() }
+    registerPacket { dev.spaghett.protocol.v1_8.play.server.S05SpawnPosition() }
+    registerPacket { dev.spaghett.protocol.v1_8.play.server.S08PlayerPositionAndLook() }
+    registerPacket { dev.spaghett.protocol.v1_8.play.server.S39PlayerAbilities() }
+    registerPacket { dev.spaghett.protocol.v1_8.play.server.S41ServerDifficulty() }
 }

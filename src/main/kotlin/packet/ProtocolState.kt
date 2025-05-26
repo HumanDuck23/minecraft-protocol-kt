@@ -4,7 +4,8 @@ enum class ProtocolState {
     HANDSHAKE,
     STATUS,
     LOGIN,
-    PLAY;
+    PLAY,
+    CONFIGURATION;
 
     companion object {
         @JvmStatic

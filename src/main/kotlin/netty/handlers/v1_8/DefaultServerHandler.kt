@@ -1,18 +1,19 @@
-package dev.spaghett.netty.handlers
+package dev.spaghett.netty.handlers.v1_8
 
 import com.google.gson.JsonObject
 import dev.spaghett.netty.STATE_KEY
+import dev.spaghett.netty.handlers.ServerPacketHandler
 import dev.spaghett.netty.instance.ServerConfiguration
 import dev.spaghett.packet.Packet
 import dev.spaghett.packet.ProtocolState
-import dev.spaghett.protocol.handshake.client.C00Handshake
-import dev.spaghett.protocol.login.client.C00LoginStart
-import dev.spaghett.protocol.login.server.S02LoginSuccess
-import dev.spaghett.protocol.play.client.C17PluginMessage
-import dev.spaghett.protocol.play.server.*
-import dev.spaghett.protocol.status.client.C00StatusRequest
-import dev.spaghett.protocol.status.client.C01StatusPing
-import dev.spaghett.protocol.status.server.S00StatusResponse
+import dev.spaghett.protocol.v1_8.login.client.C00LoginStart
+import dev.spaghett.protocol.v1_8.login.server.S02LoginSuccess
+import dev.spaghett.protocol.v1_8.play.client.C17PluginMessage
+import dev.spaghett.protocol.v1_8.play.server.*
+import dev.spaghett.protocol.v1_8.status.client.C00StatusRequest
+import dev.spaghett.protocol.v1_8.status.client.C01StatusPing
+import dev.spaghett.protocol.v1_8.status.server.S00StatusResponse
+import dev.spaghett.protocol.v1_8.status.server.S01StatusPong
 import io.netty.channel.ChannelHandlerContext
 import java.util.UUID
 
@@ -50,7 +51,7 @@ class DefaultServerHandler(private val config: ServerConfiguration) : ServerPack
             is C01StatusPing -> {
                 val pingTime = packet.payload
 
-                val pongResponse = dev.spaghett.protocol.status.server.S01StatusPong()
+                val pongResponse = S01StatusPong()
                 pongResponse.payload = pingTime
                 ctx.writeAndFlush(pongResponse)
 
@@ -124,5 +125,9 @@ class DefaultServerHandler(private val config: ServerConfiguration) : ServerPack
                 ctx.writeAndFlush(playerPositionAndLook)
             }
         }
+    }
+
+    override fun configuration(ctx: ChannelHandlerContext, packet: Packet) {
+        // do nothing this doesn't exist in 1.8
     }
 }

@@ -18,6 +18,7 @@ abstract class PacketHandler : SimpleChannelInboundHandler<Packet>() {
             ProtocolState.STATUS -> status(ctx, packet)
             ProtocolState.LOGIN -> login(ctx, packet)
             ProtocolState.PLAY -> play(ctx, packet)
+            ProtocolState.CONFIGURATION -> configuration(ctx, packet)
         }
     }
 
@@ -25,4 +26,5 @@ abstract class PacketHandler : SimpleChannelInboundHandler<Packet>() {
     protected abstract fun status(ctx: ChannelHandlerContext, packet: Packet)
     protected abstract fun login(ctx: ChannelHandlerContext, packet: Packet)
     protected abstract fun play(ctx: ChannelHandlerContext, packet: Packet)
+    protected abstract fun configuration(ctx: ChannelHandlerContext, packet: Packet)
 }
