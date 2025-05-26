@@ -5,8 +5,7 @@ import dev.spaghett.netty.codec.LengthDecoder
 import dev.spaghett.netty.codec.LengthEncoder
 import dev.spaghett.netty.codec.PacketDecoder
 import dev.spaghett.netty.codec.PacketEncoder
-import dev.spaghett.netty.handlers.v1_8.DefaultServerHandler
-import dev.spaghett.netty.handlers.ServerPacketHandler
+import dev.spaghett.netty.handlers.PacketHandler
 import dev.spaghett.packet.PacketDirection
 import dev.spaghett.packet.ProtocolState
 import io.netty.bootstrap.ServerBootstrap
@@ -15,11 +14,10 @@ import io.netty.channel.MultiThreadIoEventLoopGroup
 import io.netty.channel.nio.NioIoHandler
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
-import kotlin.reflect.KClass
 
 class Server (
     private val config: ServerConfiguration,
-    private val handlerFactory: () -> ServerPacketHandler
+    private val handlerFactory: () -> PacketHandler
 ) {
     private val bossGroup = MultiThreadIoEventLoopGroup(NioIoHandler.newFactory())
     private val workerGroup = MultiThreadIoEventLoopGroup(NioIoHandler.newFactory())

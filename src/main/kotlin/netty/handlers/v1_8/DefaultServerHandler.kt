@@ -6,6 +6,7 @@ import dev.spaghett.netty.handlers.ServerPacketHandler
 import dev.spaghett.netty.instance.ServerConfiguration
 import dev.spaghett.packet.Packet
 import dev.spaghett.packet.ProtocolState
+import dev.spaghett.protocol.v1_8.handshake.client.C00Handshake
 import dev.spaghett.protocol.v1_8.login.client.C00LoginStart
 import dev.spaghett.protocol.v1_8.login.server.S02LoginSuccess
 import dev.spaghett.protocol.v1_8.play.client.C17PluginMessage
@@ -17,7 +18,14 @@ import dev.spaghett.protocol.v1_8.status.server.S01StatusPong
 import io.netty.channel.ChannelHandlerContext
 import java.util.UUID
 
-class DefaultServerHandler(private val config: ServerConfiguration) : ServerPacketHandler(config) {
+class DefaultServerHandler(private val config: ServerConfiguration) : ServerPacketHandler() {
+    override fun handshake(ctx: ChannelHandlerContext, packet: Packet) {
+        val handshake = packet as C00Handshake
+
+        val next = ProtocolState.fromId(handshake.nextState)
+        ctx.channel().attr(STATE_KEY).set(next)
+    }
+
     override fun status(ctx: ChannelHandlerContext, packet: Packet) {
         when (packet) {
             is C00StatusRequest -> {
