@@ -16,6 +16,7 @@ dependencies {
     implementation("io.netty:netty-all:4.2.0.Final")
     implementation("org.slf4j:slf4j-simple:2.0.13")
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }
 
 tasks.test {
