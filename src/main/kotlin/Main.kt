@@ -12,7 +12,7 @@ fun main() {
 //    val config = ServerConfiguration(version = ProtocolVersion.V1_8, port = 25566, onlineMode = false)
 //    val server = Server(config) { DefaultServerHandler(config) }
 //    server.start()
-    val clientConfig = ClientConfiguration(version = ProtocolVersion.V1_8, port = 25567, host = "localhost", username = "SpaghettoBot")
+    val clientConfig = ClientConfiguration(version = ProtocolVersion.V1_8, port = 25567, host = "localhost", username = "_________B______", authenticate = true )
     val client = Client(clientConfig) { DefaultClientHandler(clientConfig) }
     client.connect()
 }

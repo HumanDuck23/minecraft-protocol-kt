@@ -8,6 +8,7 @@ import dev.spaghett.netty.codec.PacketEncoder
 import dev.spaghett.netty.handlers.PacketHandler
 import dev.spaghett.packet.PacketDirection
 import dev.spaghett.packet.ProtocolState
+import dev.spaghett.utils.AuthManager
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.MultiThreadIoEventLoopGroup
@@ -16,14 +17,25 @@ import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioSocketChannel
 import org.slf4j.LoggerFactory
 
+
 class Client(
     private val config: ClientConfiguration,
     private val handlerFactory: () -> PacketHandler
 ) {
     private val group = MultiThreadIoEventLoopGroup(NioIoHandler.newFactory())
     private val logger = LoggerFactory.getLogger(Client::class.java)
+    private val authManager = AuthManager(config.username)
 
     fun connect() {
+        if (config.authenticate) {
+            try {
+                val session = authManager.auth()
+                config.session = session
+            } catch (e: Exception) {
+                logger.error("Authentication failed: ${e.message}", e)
+                return
+            }
+        }
         try {
             val bootstrap = Bootstrap().apply {
                 group(group)

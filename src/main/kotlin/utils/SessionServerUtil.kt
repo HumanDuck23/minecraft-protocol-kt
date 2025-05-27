@@ -4,8 +4,10 @@ import com.google.gson.*
 import dev.spaghett.protocol.GameProfile
 import io.netty.channel.ChannelHandlerContext
 import okhttp3.HttpUrl
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Type
 import java.util.*
@@ -16,8 +18,9 @@ object SessionServerUtil {
 
     private val httpClient = OkHttpClient()
     private val gson = GsonBuilder()
-        .registerTypeAdapter(UUID::class.java,
-            object: JsonDeserializer<UUID> {
+        .registerTypeAdapter(
+            UUID::class.java,
+            object : JsonDeserializer<UUID> {
                 override fun deserialize(
                     json: JsonElement,
                     typeOfT: Type,
@@ -76,6 +79,29 @@ object SessionServerUtil {
                 logger.error("Failed to verify session for user $username: ${e.message}", e)
                 ctx.executor().execute {
                     ctx.close()
+                }
+            }
+        }
+    }
+
+    fun joinSessionServer(accessToken: String, profileId: String, serverId: String, onSuccess: () -> Unit) {
+        val json = """
+            {
+              "accessToken": "$accessToken",
+              "selectedProfile": "$profileId",
+              "serverId": "$serverId"
+            }""".trimIndent()
+        val req = Request.Builder()
+            .url("https://sessionserver.mojang.com/session/minecraft/join")
+            .post(json.toRequestBody("application/json".toMediaType()))
+            .build()
+
+        authExecutor.submit {
+            httpClient.newCall(req).execute().use { resp ->
+                if (resp.code != 204) {
+                    throw IllegalStateException("Join failed: HTTP ${resp.code}")
+                } else {
+                    onSuccess()
                 }
             }
         }
