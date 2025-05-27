@@ -51,6 +51,8 @@ fun registerPackets1_8() {
     registerPacket { dev.spaghett.protocol.v1_8.login.server.S00Disconnect() }
     registerPacket { dev.spaghett.protocol.v1_8.login.server.S01EncryptionRequest() }
     registerPacket { dev.spaghett.protocol.v1_8.login.server.S02LoginSuccess() }
+    registerPacket { dev.spaghett.protocol.v1_8.login.server.S03SetCompression() }
+
 
     // Play
     registerPacket { dev.spaghett.protocol.v1_8.play.server.S01JoinGame() }
