@@ -11,8 +11,7 @@ import io.netty.channel.MultiThreadIoEventLoopGroup
 import io.netty.channel.nio.NioIoHandler
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
-import io.netty.handler.logging.LogLevel
-import io.netty.handler.logging.LoggingHandler
+import org.slf4j.LoggerFactory
 
 class Server (
     private val config: ServerConfiguration,
@@ -20,6 +19,8 @@ class Server (
 ) {
     private val bossGroup = MultiThreadIoEventLoopGroup(NioIoHandler.newFactory())
     private val workerGroup = MultiThreadIoEventLoopGroup(NioIoHandler.newFactory())
+
+    private val logger = LoggerFactory.getLogger(Server::class.java)
 
     fun start() {
         try {
@@ -42,7 +43,7 @@ class Server (
                     }
                 })
             }.bind(config.port).sync().also {
-                println("Server started on port ${config.port}")
+                logger.info("Server started on port ${config.port}")
                 it.channel().closeFuture().sync()
             }
         } finally {
