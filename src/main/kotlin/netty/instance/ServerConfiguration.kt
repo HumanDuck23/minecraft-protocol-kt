@@ -8,4 +8,5 @@ data class ServerConfiguration(
     val maxPlayers: Int = 20,
     val motd: String = "A Minecraft Server",
     val onlineMode: Boolean = false,
+    val compressionThreshold: Int = 256
 )

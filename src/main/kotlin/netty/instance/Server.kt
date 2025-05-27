@@ -1,10 +1,7 @@
 package dev.spaghett.netty.instance
 
 import dev.spaghett.netty.STATE_KEY
-import dev.spaghett.netty.codec.LengthDecoder
-import dev.spaghett.netty.codec.LengthEncoder
-import dev.spaghett.netty.codec.PacketDecoder
-import dev.spaghett.netty.codec.PacketEncoder
+import dev.spaghett.netty.codec.*
 import dev.spaghett.netty.handlers.PacketHandler
 import dev.spaghett.packet.PacketDirection
 import dev.spaghett.packet.ProtocolState
@@ -14,6 +11,8 @@ import io.netty.channel.MultiThreadIoEventLoopGroup
 import io.netty.channel.nio.NioIoHandler
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
+import io.netty.handler.logging.LogLevel
+import io.netty.handler.logging.LoggingHandler
 
 class Server (
     private val config: ServerConfiguration,
@@ -33,10 +32,10 @@ class Server (
 
                         val p = ch.pipeline()
 
-                        p.addLast("lengthDecoder", LengthDecoder())
+                        p.addLast("framingDecoder", FramingDecoder())
                         p.addLast("packetDecoder", PacketDecoder(PacketDirection.FROM_CLIENT, config.version))
 
-                        p.addLast("lengthEncoder", LengthEncoder())
+                        p.addLast("framingEncoder", FramingEncoder())
                         p.addLast("packetEncoder", PacketEncoder())
 
                         p.addLast("handler", handlerFactory())

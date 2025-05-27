@@ -6,7 +6,7 @@ import dev.spaghett.netty.instance.ServerConfiguration
 import dev.spaghett.packet.ProtocolVersion
 
 fun main() {
-    val config = ServerConfiguration(version = ProtocolVersion.V1_8)
+    val config = ServerConfiguration(version = ProtocolVersion.V1_8, port = 25566)
     val server = Server(config) { DefaultServerHandler(config) }
     server.start()
 }

@@ -2,6 +2,8 @@ package dev.spaghett.netty.handlers.v1_8
 
 import com.google.gson.JsonObject
 import dev.spaghett.netty.STATE_KEY
+import dev.spaghett.netty.codec.FramingDecoder
+import dev.spaghett.netty.codec.FramingEncoder
 import dev.spaghett.netty.handlers.ServerPacketHandler
 import dev.spaghett.netty.instance.ServerConfiguration
 import dev.spaghett.packet.Packet
@@ -9,6 +11,7 @@ import dev.spaghett.packet.ProtocolState
 import dev.spaghett.protocol.v1_8.handshake.client.C00Handshake
 import dev.spaghett.protocol.v1_8.login.client.C00LoginStart
 import dev.spaghett.protocol.v1_8.login.server.S02LoginSuccess
+import dev.spaghett.protocol.v1_8.login.server.S03SetCompression
 import dev.spaghett.protocol.v1_8.play.client.C17PluginMessage
 import dev.spaghett.protocol.v1_8.play.server.*
 import dev.spaghett.protocol.v1_8.status.client.C00StatusRequest
@@ -75,6 +78,18 @@ class DefaultServerHandler(private val config: ServerConfiguration) : ServerPack
     override fun login(ctx: ChannelHandlerContext, packet: Packet) {
         when (packet) {
             is C00LoginStart -> {
+                if (config.compressionThreshold > 0) {
+                    val compressionPacket = S03SetCompression().apply {
+                        threshold = config.compressionThreshold
+                    }
+                    ctx.writeAndFlush(compressionPacket)
+
+                    val framingDecoder = ctx.channel().pipeline().get("framingDecoder") as FramingDecoder
+                    framingDecoder.setThreshold(config.compressionThreshold)
+                    val framingEncoder = ctx.channel().pipeline().get("framingEncoder") as FramingEncoder
+                    framingEncoder.setThreshold(config.compressionThreshold)
+                }
+
                 val success = S02LoginSuccess()
                 success.uuid = UUID.nameUUIDFromBytes(packet.username.toByteArray()).toString()
                 success.username = packet.username
@@ -122,15 +137,17 @@ class DefaultServerHandler(private val config: ServerConfiguration) : ServerPack
     override fun play(ctx: ChannelHandlerContext, packet: Packet) {
         when (packet) {
             is C17PluginMessage -> {
-                val playerPositionAndLook = S08PlayerPositionAndLook().apply {
-                    x = 0.0
-                    y = 64.0
-                    z = 0.0
-                    yaw = 0f
-                    pitch = 0f
-                    flags = 0
+                if (packet.channel == "MC|Brand") {
+                    val playerPositionAndLook = S08PlayerPositionAndLook().apply {
+                        x = 0.0
+                        y = 64.0
+                        z = 0.0
+                        yaw = 0f
+                        pitch = 0f
+                        flags = 0
+                    }
+                    ctx.writeAndFlush(playerPositionAndLook)
                 }
-                ctx.writeAndFlush(playerPositionAndLook)
             }
         }
     }
