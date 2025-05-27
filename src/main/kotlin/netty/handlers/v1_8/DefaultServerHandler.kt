@@ -34,6 +34,10 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 class DefaultServerHandler(private val config: ServerConfiguration) : PacketHandler() {
+    override fun onConnectionOpened(ctx: ChannelHandlerContext) {
+        logger.info("Connection opened from {}", ctx.channel().remoteAddress())
+    }
+
     override fun handshake(ctx: ChannelHandlerContext, packet: Packet) {
         val handshake = packet as C00Handshake
 

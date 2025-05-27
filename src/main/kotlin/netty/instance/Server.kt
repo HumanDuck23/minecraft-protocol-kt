@@ -39,7 +39,9 @@ class Server (
                         p.addLast("framingEncoder", FramingEncoder())
                         p.addLast("packetEncoder", PacketEncoder())
 
-                        p.addLast("handler", handlerFactory())
+                        val handler = handlerFactory()
+                        p.addLast("handler", handler)
+                        handler.onConnectionOpened(ch.pipeline().context(handler))
                     }
                 })
             }.bind(config.port).sync().also {

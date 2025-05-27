@@ -27,4 +27,6 @@ abstract class PacketHandler : SimpleChannelInboundHandler<Packet>() {
     protected abstract fun login(ctx: ChannelHandlerContext, packet: Packet)
     protected abstract fun play(ctx: ChannelHandlerContext, packet: Packet)
     protected abstract fun configuration(ctx: ChannelHandlerContext, packet: Packet)
+
+    abstract fun onConnectionOpened(ctx: ChannelHandlerContext)
 }
