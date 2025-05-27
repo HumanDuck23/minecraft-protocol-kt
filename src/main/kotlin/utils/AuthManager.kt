@@ -8,10 +8,12 @@ import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession.FullJavaS
 import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode.MsaDeviceCode
 import net.raphimc.minecraftauth.step.msa.StepMsaDeviceCode.MsaDeviceCodeCallback
 import java.io.File
+import java.nio.file.Paths
+import kotlin.io.path.pathString
 
 
 class AuthManager(private val username: String) {
-    private val cacheFile = File(getMinecraftFolder(), "auth_cache_$username.json")
+    private val cacheFile = File(Paths.get(getMinecraftFolder().path, "mckt").toAbsolutePath().pathString, "auth_cache_$username.json")
     private val gson = Gson()
 
     fun auth(): FullJavaSession {
