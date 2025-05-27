@@ -8,7 +8,7 @@ import dev.spaghett.netty.codec.AesDecoder
 import dev.spaghett.netty.codec.AesEncoder
 import dev.spaghett.netty.codec.FramingDecoder
 import dev.spaghett.netty.codec.FramingEncoder
-import dev.spaghett.netty.handlers.ServerPacketHandler
+import dev.spaghett.netty.handlers.PacketHandler
 import dev.spaghett.netty.instance.ServerConfiguration
 import dev.spaghett.packet.Packet
 import dev.spaghett.packet.ProtocolState
@@ -33,7 +33,7 @@ import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-class DefaultServerHandler(private val config: ServerConfiguration) : ServerPacketHandler() {
+class DefaultServerHandler(private val config: ServerConfiguration) : PacketHandler() {
     override fun handshake(ctx: ChannelHandlerContext, packet: Packet) {
         val handshake = packet as C00Handshake
 
