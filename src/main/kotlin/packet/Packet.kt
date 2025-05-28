@@ -2,14 +2,14 @@ package dev.spaghett.packet
 
 import io.netty.buffer.ByteBuf
 
-abstract class Packet(val meta: PacketMeta) {
+abstract class Packet(open val meta: PacketMeta) {
     private val fields = mutableListOf<PacketValue<*>>()
 
     fun registerField(field: PacketValue<*>) {
         fields += field
     }
 
-    fun read(buf: ByteBuf) {
+    open fun read(buf: ByteBuf) {
         for (field in fields) {
             if (field.readPredicate?.invoke() != false) {
                 field.read(buf)
@@ -17,7 +17,7 @@ abstract class Packet(val meta: PacketMeta) {
         }
     }
 
-    fun write(buf: ByteBuf) {
+    open fun write(buf: ByteBuf) {
         for (field in fields) {
             if (field.readPredicate?.invoke() != false) {
                 field.write(buf)

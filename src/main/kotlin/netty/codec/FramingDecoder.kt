@@ -26,7 +26,7 @@ class FramingDecoder(private var threshold: Int = -1) : ByteToMessageDecoder() {
                 return
             }
 
-            val packetData = buf.readBytes(packetLength)
+            val packetData = buf.readRetainedSlice(packetLength)
 
             if (threshold == -1) {
                 // Compression is disabled, pass along raw packet

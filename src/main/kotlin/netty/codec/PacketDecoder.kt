@@ -1,10 +1,7 @@
 package dev.spaghett.netty.codec
 
 import dev.spaghett.netty.STATE_KEY
-import dev.spaghett.packet.PacketDirection
-import dev.spaghett.packet.PacketMeta
-import dev.spaghett.packet.PacketRegistry
-import dev.spaghett.packet.ProtocolVersion
+import dev.spaghett.packet.*
 import dev.spaghett.utils.readVarInt
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
@@ -25,8 +22,9 @@ class PacketDecoder(
         val packet = PacketRegistry.create(meta)
 
         if (packet == null) {
-            logger.warn("Unknown packet received: {} (buffer size: {})", meta, buf.readableBytes())
-            buf.skipBytes(buf.readableBytes()) // discard to avoid corruption
+            //logger.warn("Unknown packet received: {} (buffer size: {})", meta, buf.readableBytes())
+            val raw = buf.readRetainedSlice(buf.readableBytes())
+            out += RawPacket(meta, raw)
             return
         }
 
