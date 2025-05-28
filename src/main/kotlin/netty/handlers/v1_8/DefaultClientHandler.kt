@@ -114,6 +114,7 @@ open class DefaultClientHandler(private val config: ClientConfiguration) : Packe
             is S02LoginSuccess -> {
                 logger.info("Login successful! Welcome, ${packet.username}!")
                 ctx.channel().attr(STATE_KEY).set(ProtocolState.PLAY)
+                onLogin(ctx)
             }
 
             is S03SetCompression -> {
@@ -173,5 +174,9 @@ open class DefaultClientHandler(private val config: ClientConfiguration) : Packe
 
         val packet = C00StatusRequest()
         ctx.writeAndFlush(packet)
+    }
+
+    open fun onLogin(ctx: ChannelHandlerContext) {
+
     }
 }

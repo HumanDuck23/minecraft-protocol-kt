@@ -166,6 +166,8 @@ open class DefaultServerHandler(private val config: ServerConfiguration) : Packe
                         flags = 0
                     }
                     ctx.writeAndFlush(playerPositionAndLook)
+
+                    onClientLogin(ctx)
                 }
             }
         }
@@ -230,5 +232,12 @@ open class DefaultServerHandler(private val config: ServerConfiguration) : Packe
             fovModifier = 1f
         }
         ctx.writeAndFlush(playerAbilities)
+    }
+
+    /**
+     * Called when a client has finished logging in
+     */
+    open fun onClientLogin(ctx: ChannelHandlerContext) {
+
     }
 }
