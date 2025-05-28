@@ -33,7 +33,7 @@ import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-class DefaultServerHandler(private val config: ServerConfiguration) : PacketHandler() {
+open class DefaultServerHandler(private val config: ServerConfiguration) : PacketHandler() {
     override fun onConnectionOpened(ctx: ChannelHandlerContext) {
         logger.info("Connection opened from {}", ctx.channel().remoteAddress())
     }

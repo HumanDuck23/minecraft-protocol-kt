@@ -29,7 +29,7 @@ import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-class DefaultClientHandler(private val config: ClientConfiguration) : PacketHandler() {
+open class DefaultClientHandler(private val config: ClientConfiguration) : PacketHandler() {
     override fun handshake(ctx: ChannelHandlerContext, packet: Packet) {
         // There are no clientbound handshake packets
     }
